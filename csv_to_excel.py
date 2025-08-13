@@ -31,7 +31,7 @@ if uploaded:
 
     def try_read(encoding):
         uploaded.seek(0)
-        return pd.read_csv(uploaded,  sep="\t", encoding=encoding)
+        return pd.read_csv(uploaded, sep="\t", encoding=encoding)
 
     if enc_choice != "Auto-detect" and enc_choice is not None:
         try:
@@ -69,6 +69,9 @@ if uploaded:
         start = st.number_input("Start row (1-based)", min_value=1, max_value=max(1, len(df)), value=1, step=1)
         end = st.number_input("End row (1-based)", min_value=1, max_value=max(1, len(df)), value=len(df), step=1)
 
+        # Custom filename input
+        file_name = st.text_input("Output file name", value="converted_file.xlsx")
+
         if start > end:
             st.error("Start row must be ≤ End row.")
         else:
@@ -77,9 +80,17 @@ if uploaded:
                 buf = io.BytesIO()
                 with pd.ExcelWriter(buf, engine="openpyxl") as writer:
                     selection.to_excel(writer, index=False, sheet_name="Selection")
+
+                # Ensure .xlsx extension
+                final_name = file_name.strip()
+                if final_name and not final_name.lower().endswith(".xlsx"):
+                    final_name += ".xlsx"
+                elif not final_name:
+                    final_name = "converted_file.xlsx"
+
                 st.download_button(
                     "Download Excel",
                     data=buf.getvalue(),
-                    file_name="selection.xlsx",
+                    file_name=final_name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
