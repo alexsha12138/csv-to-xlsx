@@ -4,7 +4,8 @@ import pandas as pd
 import streamlit as st
 from charset_normalizer import from_bytes
 
-st.title("CSV → XLSX (Row Range)")
+st.title("CSV → XLSX Converter")
+st.caption("* only works with csv files using "tabs" delimiter")
 
 uploaded = st.file_uploader("Upload CSV", type=["csv"])
 
